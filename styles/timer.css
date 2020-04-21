@@ -12,9 +12,17 @@ body
 h2
 {
    font-family: FranklinGothic, Verdana, Arial, sans-serif;
-   font-size: 84px;
+   font-size: 400px;
    color: #000;
 }
+
+h3
+{
+   font-family: FranklinGothic, Verdana, Arial, sans-serif;
+   font-size: 100px;
+   color: #000;
+}
+
 
 #textWrapper {
    position: absolute;
