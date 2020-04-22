@@ -48,17 +48,6 @@ PAUSE = "pause",
 STOP = "stop",
 NONE = "";
 
-
-function Start(event) {
-    if (Egg.started) {
-        return;
-    }
-    Egg.started = true;
-    Egg.start();
-    Egg.startButton.classList.add('hidden');
-    // document.body.removeEventListener('click', Start, false);
-}
-
 const Egg = {
     name: "EggTimer",
     defaultText: "",
@@ -84,20 +73,25 @@ const Egg = {
     sequence: [],
     canAlert: true,
     start: function () {
+        if (Egg.started) {
+            return;
+        }
+        Egg.started = true;
         Egg.initializeTimer2("Expired!");
     },
     initializeTimer2: function (label) {
-        Egg.endDate = new Date((new Date).getTime() + Egg.totalTime);
-        Egg.currDate = new Date;
+        Egg.currDate = new Date();
+        Egg.endDate = new Date(Egg.currDate.getTime() + Egg.totalTime);
         Egg.expiredMessage = label || Egg.expiredMessage;
+        Egg.progressBar.style.transitionDuration = (Egg.totalTime / 1000) + "s";
         Egg.progressBar.classList.add('active');
-        Egg.update();
+        Egg.update(Egg.currDate);
         if (!Egg.ticker) {
             Egg.ticker = setInterval(Egg.update, 1e3 / 2)
         }
     },
-    update: function () {
-        Time.calcTime(new Date(), Egg.endDate);
+    update: function (begin = new Date()) {
+        Time.calcTime(begin, Egg.endDate);
         Egg.updateParts(Time)
     },
     updateParts: function (Time) {
@@ -149,6 +143,8 @@ const Egg = {
         Egg.started = false;
         if (beepFinishedPromise && typeof beepFinishedPromise.then === "function") {
             beepFinishedPromise.then(function () {
+                Egg.progressBar.style.transitionDuration = 0;
+                Egg.progressBar.classList.remove('active');
                 console.log("finished");
             });
         }
@@ -174,13 +170,13 @@ function onKeyPress(e) {
     const code = keyKodeToDirection(e.keyCode);
     console.log(code);
     if (code === START) {
-        Start();
+        Egg.start();
     } else if (code === RESTART) {
         Egg.started = false;
-        Start();
+        Egg.start();
     } else if (code === START_PAUSE) {
         if (!Egg.started) {
-            Start();
+            Egg.start();
         } else {
             Egg.pause();
         }
@@ -200,10 +196,11 @@ function init() {
     Egg.startButton = document.querySelector("#tapButton");
     Egg.beep = document.getElementById("beepbeep");
     Egg.progressBar.style.transitionDuration = (Egg.totalTime / 1000) + "s";
-    document.body.addEventListener('click', Start, false);
+    document.body.addEventListener('click', Egg.start, false);
     window.addEventListener('keydown', onKeyPress);
-    Egg.endDate = new Date((new Date).getTime() + Egg.totalTime);
-    Egg.update();
+    const begin = new Date();
+    Egg.endDate = new Date(begin.getTime() + Egg.totalTime);
+    Egg.update(begin);
 
     if (Egg.beep && Egg.beep.load) {
         Egg.beep.load();
