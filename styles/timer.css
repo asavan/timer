@@ -11,13 +11,13 @@ html {
 
 
 h2 {
-    font-family:  Monaco, "Liberation Mono", "Fira Mono", Menlo, "Lucida Console", "DejaVu Sans Mono", monospace;
-    font-size: 20em;
+    font-family: monospace;
+    font-size: 36em;
 }
 
 h3 {
     font-family: FranklinGothic, Verdana, Arial, sans-serif;
-    font-size: 7em;
+    font-size: 5em;
     font-weight: normal;
 }
 
