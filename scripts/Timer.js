@@ -2,51 +2,34 @@
 (function () {
 
 
-function int(a) {
-    return Math.floor(a)
+function calcTime(startDate, endDate) {
+    const MILLISECONDS = 1;
+    const SECONDS = 1e3;
+    const MINUTES = 6e4;
+    const HOURS = 36e5;
+
+    function int(a) {
+        return Math.floor(a)
+    }
+
+    const c = endDate.getTime() - startDate.getTime();
+    const res = {};
+    res.totalMilliseconds = c / MILLISECONDS;
+    res.totalSeconds = c / SECONDS;
+    res.totalMinutes = c / MINUTES;
+    res.totalHours = c / HOURS;
+    res.remainingHours = int(res.totalHours);
+    res.remainingMinutes = int(res.totalMinutes - 60 * int(res.totalHours));
+    res.remainingSeconds = int(res.totalSeconds - 60 * int(res.totalMinutes));
+    return res;
 }
 
-const Time = {
-    MILLISECONDS: 1,
-    SECONDS: 1e3,
-    MINUTES: 6e4,
-    HOURS: 36e5,
-    DAYS: 864e5,
-    daysInMonth: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
-    totalYears: 0,
-    remainingYears: 0,
-    totalMonths: 0,
-    remainingMonths: 0,
-    totalDays: 0,
-    remainingDays: 0,
-    totalHours: 0,
-    remainingHours: 0,
-    totalMinutes: 0,
-    remainingMinutes: 0,
-    totalSeconds: 0,
-    remainingSeconds: 0,
-    totalMilliseconds: 0,
-    remainingMilliseconds: 0,
-    calcTime: function (startDate, endDate) {
-        const c = endDate.getTime() - startDate.getTime();
-        Time.totalMilliseconds = c / Time.MILLISECONDS;
-        Time.totalSeconds = c / Time.SECONDS;
-        Time.totalMinutes = c / Time.MINUTES;
-        Time.totalHours = c / Time.HOURS;
-        Time.remainingHours = int(Time.totalHours);
-        Time.remainingMinutes = int(Time.totalMinutes - 60 * int(Time.totalHours));
-        Time.remainingSeconds = int(Time.totalSeconds - 60 * int(Time.totalMinutes));
-        Time.remainingMilliseconds = int(Time.totalMilliseconds - 1e3 * int(Time.totalSeconds));
-    }
-};
-
-
 const START = "start",
-RESTART = "restart",
-START_PAUSE = "start_pause",
-PAUSE = "pause",
-STOP = "stop",
-NONE = "";
+    RESTART = "restart",
+    START_PAUSE = "start_pause",
+    PAUSE = "pause",
+    STOP = "stop",
+    NONE = "";
 
 const Egg = {
     name: "EggTimer",
@@ -91,8 +74,7 @@ const Egg = {
         }
     },
     update: function (begin = new Date()) {
-        Time.calcTime(begin, Egg.endDate);
-        Egg.updateParts(Time)
+        Egg.updateParts(calcTime(begin, Egg.endDate));
     },
     updateParts: function (Time) {
         if (Time.totalSeconds < 0) {
@@ -111,14 +93,13 @@ const Egg = {
         } else {
             clockTime.push(padTimeText(0))
         }
-        let separator = Egg.blink ? "." : ":" ;
+        let separator = Egg.blink ? "." : ":";
         Egg.blink = !Egg.blink;
         let title = clockTime.join(separator) + (Egg.label && Egg.label !== "" ? " : " + Egg.label : "");
         Egg.updateTitle(title);
         Egg.updateText(title);
         Egg.progress = (Egg.totalTime - Time.totalMilliseconds) / Egg.totalTime;
         Egg.updateProgressBar();
-        // Egg.currDate = new Date
     },
     updateTitle: function (title) {
         document.title = title;
@@ -132,22 +113,15 @@ const Egg = {
         let beepFinishedPromise = null;
         Egg.progress = 1;
         Egg.updateProgressBar();
+        Egg.started = false;
         if (Egg.beep && Egg.beep.play) {
             Egg.beep.volume = Egg.volume;
-            beepFinishedPromise = Egg.beep.play()
+            Egg.beep.play();
         }
         clearInterval(Egg.ticker);
         Egg.ticker = null;
         Egg.updateTitle(Egg.expiredMessage);
         Egg.progressText.innerHTML = "&#x1F570;";
-        Egg.started = false;
-        if (beepFinishedPromise && typeof beepFinishedPromise.then === "function") {
-            beepFinishedPromise.then(function () {
-                Egg.progressBar.style.transitionDuration = 0;
-                Egg.progressBar.classList.remove('active');
-                console.log("finished");
-            });
-        }
     }
 };
 
@@ -184,7 +158,7 @@ function onKeyPress(e) {
 }
 
 
-    function padTimeText(value) {
+function padTimeText(value) {
     return value < 10 ? "0" + value : "" + value
 }
 
@@ -205,6 +179,13 @@ function init() {
     if (Egg.beep && Egg.beep.load) {
         Egg.beep.load();
     }
+    Egg.beep.addEventListener('ended', function () {
+        if (Egg.started) {
+            return;
+        }
+        Egg.progressBar.style.transitionDuration = "0.5s";
+        Egg.progressBar.classList.remove('active');
+    });
 }
 
 if (document.readyState !== 'loading') {
