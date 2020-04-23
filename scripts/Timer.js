@@ -49,7 +49,6 @@ const Egg = {
     currDate: null,
     endDate: null,
     ticker: null,
-    startButton: null,
     volume: 1,
     started: false,
     blink: false,
@@ -110,7 +109,6 @@ const Egg = {
         if (text) Egg.progressText.innerText = text;
     },
     onTimeComplete: function () {
-        let beepFinishedPromise = null;
         Egg.progress = 1;
         Egg.updateProgressBar();
         Egg.started = false;
@@ -167,7 +165,6 @@ function init() {
     Egg.totalTime = hash * 60000;
     Egg.progressBar = document.querySelector("#progress");
     Egg.progressText = document.querySelector("#progressText");
-    Egg.startButton = document.querySelector("#tapButton");
     Egg.beep = document.getElementById("beepbeep");
     Egg.progressBar.style.transitionDuration = (Egg.totalTime / 1000) + "s";
     document.body.addEventListener('click', Egg.start, false);
