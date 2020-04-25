@@ -44,6 +44,7 @@ const Egg = {
     parseError: "",
     progressBar: null,
     progressText: null,
+    endImage: null,
     staticArea: null,
     beep: null,
     currDate: null,
@@ -67,6 +68,8 @@ const Egg = {
         Egg.expiredMessage = label || Egg.expiredMessage;
         Egg.progressBar.style.transitionDuration = (Egg.totalTime / 1000) + "s";
         Egg.progressBar.classList.add('active');
+        Egg.progressText.classList.remove('hidden');
+        Egg.endImage.classList.add('hidden');
         Egg.update(Egg.currDate);
         if (!Egg.ticker) {
             Egg.ticker = setInterval(Egg.update, 1e3 / 2)
@@ -119,7 +122,6 @@ const Egg = {
         clearInterval(Egg.ticker);
         Egg.ticker = null;
         Egg.updateTitle(Egg.expiredMessage);
-        Egg.progressText.innerHTML = "&#x1F570;";
     }
 };
 
@@ -164,7 +166,8 @@ function init() {
     const hash = window.location.href.split('#')[1] || 4;
     Egg.totalTime = hash * 60000;
     Egg.progressBar = document.querySelector("#progress");
-    Egg.progressText = document.querySelector("#progressText");
+    Egg.progressText = document.querySelector(".time-field");
+    Egg.endImage = document.querySelector(".ended");
     Egg.beep = document.getElementById("beepbeep");
     Egg.progressBar.style.transitionDuration = (Egg.totalTime / 1000) + "s";
     document.body.addEventListener('click', Egg.start, false);
@@ -180,8 +183,10 @@ function init() {
         if (Egg.started) {
             return;
         }
-        Egg.progressBar.style.transitionDuration = "0.5s";
+        Egg.progressBar.style.transitionDuration = "0.3s";
         Egg.progressBar.classList.remove('active');
+        Egg.progressText.classList.add('hidden');
+        Egg.endImage.classList.remove('hidden');
     });
 }
 

@@ -1,4 +1,4 @@
-html, body, div, h1 {
+html, body, div, h1, h2 {
     margin: 0;
     padding: 0;
     border: 0;
@@ -9,6 +9,13 @@ html {
 }
 
 h1 {
+    font-family: FranklinGothic, Verdana, Arial, sans-serif;
+    font-size: 46em;
+    text-align: center;
+    font-weight: normal;
+}
+
+h2 {
     font-family: monospace;
     font-size: 36em;
     text-align: center;
