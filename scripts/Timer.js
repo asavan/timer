@@ -197,4 +197,7 @@ if (document.readyState !== 'loading') {
         init();
     });
 }
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js', {scope: './'});
+}
 })();
