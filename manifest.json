@@ -5,8 +5,12 @@
         {
             "src": "./images/sand-clock-svgrepo-com.svg",
             "sizes": "any",
-            "type": "image/svg",
             "purpose": "any maskable"
+        },
+        {
+            "src": "./images/sand-clock-svgrepo-com.png",
+            "sizes": "512x512",
+            "type": "image/png"
         }
     ],
     "theme_color": "#ffffff",
