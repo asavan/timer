@@ -1,7 +1,6 @@
 "use strict";
 (function () {
 
-
 function calcTime(startDate, endDate) {
     const MILLISECONDS = 1;
     const SECONDS = 1e3;
@@ -31,8 +30,8 @@ const START = "start",
     STOP = "stop",
     NONE = "";
 
-const Egg = {
-    name: "EggTimer",
+const Timer = {
+    name: "BestTimer",
     defaultText: "",
     expiredMessage: "",
     title: "",
@@ -56,31 +55,31 @@ const Egg = {
     sequence: [],
     canAlert: true,
     start: function () {
-        if (Egg.started) {
+        if (Timer.started) {
             return;
         }
-        Egg.started = true;
-        Egg.initializeTimer2("Expired!");
+        Timer.started = true;
+        Timer.initializeTimer2("Expired!");
     },
     initializeTimer2: function (label) {
-        Egg.currDate = new Date();
-        Egg.endDate = new Date(Egg.currDate.getTime() + Egg.totalTime);
-        Egg.expiredMessage = label || Egg.expiredMessage;
-        Egg.progressBar.style.transitionDuration = (Egg.totalTime / 1000) + "s";
-        Egg.progressBar.classList.add('active');
-        Egg.progressText.classList.remove('hidden');
-        Egg.endImage.classList.add('hidden');
-        Egg.update(Egg.currDate);
-        if (!Egg.ticker) {
-            Egg.ticker = setInterval(Egg.update, 1e3 / 2)
+        Timer.currDate = new Date();
+        Timer.endDate = new Date(Timer.currDate.getTime() + Timer.totalTime);
+        Timer.expiredMessage = label || Timer.expiredMessage;
+        Timer.progressBar.style.transitionDuration = (Timer.totalTime / 1000) + "s";
+        Timer.progressBar.classList.add('active');
+        Timer.progressText.classList.remove('hidden');
+        Timer.endImage.classList.add('hidden');
+        Timer.update(Timer.currDate);
+        if (!Timer.ticker) {
+            Timer.ticker = setInterval(Timer.update, 1e3 / 2)
         }
     },
     update: function (begin = new Date()) {
-        Egg.updateParts(calcTime(begin, Egg.endDate));
+        Timer.updateParts(calcTime(begin, Timer.endDate));
     },
     updateParts: function (Time) {
         if (Time.totalSeconds < 0) {
-            Egg.onTimeComplete();
+            Timer.onTimeComplete();
             return
         }
         const clockTime = [];
@@ -95,13 +94,13 @@ const Egg = {
         } else {
             clockTime.push(padTimeText(0))
         }
-        let separator = Egg.blink ? "." : ":";
-        Egg.blink = !Egg.blink;
-        let title = clockTime.join(separator) + (Egg.label && Egg.label !== "" ? " : " + Egg.label : "");
-        Egg.updateTitle(title);
-        Egg.updateText(title);
-        Egg.progress = (Egg.totalTime - Time.totalMilliseconds) / Egg.totalTime;
-        Egg.updateProgressBar();
+        let separator = Timer.blink ? "." : ":";
+        Timer.blink = !Timer.blink;
+        let title = clockTime.join(separator) + (Timer.label && Timer.label !== "" ? " : " + Timer.label : "");
+        Timer.updateTitle(title);
+        Timer.updateText(title);
+        Timer.progress = (Timer.totalTime - Time.totalMilliseconds) / Timer.totalTime;
+        Timer.updateProgressBar();
     },
     updateTitle: function (title) {
         document.title = title;
@@ -109,19 +108,19 @@ const Egg = {
     updateProgressBar: function () {
     },
     updateText: function (text) {
-        if (text) Egg.progressText.innerText = text;
+        if (text) Timer.progressText.innerText = text;
     },
     onTimeComplete: function () {
-        Egg.progress = 1;
-        Egg.updateProgressBar();
-        Egg.started = false;
-        if (Egg.beep && Egg.beep.play) {
-            Egg.beep.volume = Egg.volume;
-            Egg.beep.play();
+        Timer.progress = 1;
+        Timer.updateProgressBar();
+        Timer.started = false;
+        if (Timer.beep && Timer.beep.play) {
+            Timer.beep.volume = Timer.volume;
+            Timer.beep.play();
         }
-        clearInterval(Egg.ticker);
-        Egg.ticker = null;
-        Egg.updateTitle(Egg.expiredMessage);
+        clearInterval(Timer.ticker);
+        Timer.ticker = null;
+        Timer.updateTitle(Timer.expiredMessage);
     }
 };
 
@@ -142,17 +141,17 @@ function onKeyPress(e) {
         }
     };
     const code = keyKodeToDirection(e.keyCode);
-    console.log(code);
+    // console.log(code);
     if (code === START) {
-        Egg.start();
+        Timer.start();
     } else if (code === RESTART) {
-        Egg.started = false;
-        Egg.start();
+        Timer.started = false;
+        Timer.start();
     } else if (code === START_PAUSE) {
-        if (!Egg.started) {
-            Egg.start();
+        if (!Timer.started) {
+            Timer.start();
         } else {
-            Egg.pause();
+            Timer.pause();
         }
     }
 }
@@ -164,29 +163,29 @@ function padTimeText(value) {
 
 function init() {
     const hash = window.location.href.split('#')[1] || 4;
-    Egg.totalTime = hash * 60000;
-    Egg.progressBar = document.querySelector("#progress");
-    Egg.progressText = document.querySelector(".time-field");
-    Egg.endImage = document.querySelector(".ended");
-    Egg.beep = document.getElementById("beepbeep");
-    Egg.progressBar.style.transitionDuration = (Egg.totalTime / 1000) + "s";
-    document.body.addEventListener('click', Egg.start, false);
+    Timer.totalTime = hash * 60000;
+    Timer.progressBar = document.querySelector("#progress");
+    Timer.progressText = document.querySelector(".time-field");
+    Timer.endImage = document.querySelector(".ended");
+    Timer.beep = document.getElementById("beepbeep");
+    Timer.progressBar.style.transitionDuration = (Timer.totalTime / 1000) + "s";
+    document.body.addEventListener('click', Timer.start, false);
     window.addEventListener('keydown', onKeyPress);
     const begin = new Date();
-    Egg.endDate = new Date(begin.getTime() + Egg.totalTime);
-    Egg.update(begin);
+    Timer.endDate = new Date(begin.getTime() + Timer.totalTime);
+    Timer.update(begin);
 
-    if (Egg.beep && Egg.beep.load) {
-        Egg.beep.load();
+    if (Timer.beep && Timer.beep.load) {
+        Timer.beep.load();
     }
-    Egg.beep.addEventListener('ended', function () {
-        if (Egg.started) {
+    Timer.beep.addEventListener('ended', function () {
+        if (Timer.started) {
             return;
         }
-        Egg.progressBar.style.transitionDuration = "0.3s";
-        Egg.progressBar.classList.remove('active');
-        Egg.progressText.classList.add('hidden');
-        Egg.endImage.classList.remove('hidden');
+        Timer.progressBar.style.transitionDuration = "0.3s";
+        Timer.progressBar.classList.remove('active');
+        Timer.progressText.classList.add('hidden');
+        Timer.endImage.classList.remove('hidden');
     });
 }
 

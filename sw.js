@@ -1,4 +1,4 @@
-const CACHE = 'offline-fallback';
+const CACHE = 'offline-fallback2';
 self.addEventListener('install', function (evt) {
     evt.waitUntil(precache().then(function () {
         return self.skipWaiting();

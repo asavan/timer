@@ -28,8 +28,8 @@ h2 {
     height: 20%;
     width: 0;
     transition-timing-function: linear;
+    transition-property: width;
     background-color: blue;
-    /*z-index: 1;*/
 }
 
 .progress.active {
