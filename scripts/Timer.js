@@ -61,6 +61,12 @@ const Timer = {
         Timer.started = true;
         Timer.initializeTimer2("Expired!");
     },
+    pause: function () {
+        Timer.started = false;
+        clearInterval(Timer.ticker);
+        Timer.ticker = null;
+        Timer.totalTime = Timer.endDate - new Date();
+    },
     initializeTimer2: function (label) {
         Timer.currDate = new Date();
         Timer.endDate = new Date(Timer.currDate.getTime() + Timer.totalTime);
@@ -153,6 +159,8 @@ function onKeyPress(e) {
         } else {
             Timer.pause();
         }
+    } else if (code === PAUSE) {
+        Timer.pause();
     }
 }
 
