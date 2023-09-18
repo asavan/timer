@@ -1,6 +1,4 @@
 "use strict";
-(function () {
-
 function calcTime(startDate, endDate) {
     const MILLISECONDS = 1;
     const SECONDS = 1e3;
@@ -8,7 +6,7 @@ function calcTime(startDate, endDate) {
     const HOURS = 36e5;
 
     function int(a) {
-        return Math.floor(a)
+        return Math.floor(a);
     }
 
     const c = endDate.getTime() - startDate.getTime();
@@ -26,9 +24,10 @@ function calcTime(startDate, endDate) {
 const START = "start",
     RESTART = "restart",
     START_PAUSE = "start_pause",
-    PAUSE = "pause",
-    STOP = "stop",
-    NONE = "";
+    PAUSE = "pause";
+
+//        STOP = "stop",
+//        NONE = "";
 
 const Timer = {
     name: "BestTimer",
@@ -72,12 +71,12 @@ const Timer = {
         Timer.endDate = new Date(Timer.currDate.getTime() + Timer.totalTime);
         Timer.expiredMessage = label || Timer.expiredMessage;
         Timer.progressBar.style.transitionDuration = (Timer.totalTime / 1000) + "s";
-        Timer.progressBar.classList.add('active');
-        Timer.progressText.classList.remove('hidden');
-        Timer.endImage.classList.add('hidden');
+        Timer.progressBar.classList.add("active");
+        Timer.progressText.classList.remove("hidden");
+        Timer.endImage.classList.add("hidden");
         Timer.update(Timer.currDate);
         if (!Timer.ticker) {
-            Timer.ticker = setInterval(Timer.update, 1e3 / 2)
+            Timer.ticker = setInterval(Timer.update, 1e3 / 2);
         }
     },
     update: function (begin = new Date()) {
@@ -86,7 +85,7 @@ const Timer = {
     updateParts: function (Time) {
         if (Time.totalSeconds < 0) {
             Timer.onTimeComplete();
-            return
+            return;
         }
         const clockTime = [];
         if (Time.remainingHours > 0) {
@@ -98,7 +97,7 @@ const Timer = {
         if (Time.remainingSeconds > 0) {
             clockTime.push(padTimeText(Time.remainingSeconds));
         } else {
-            clockTime.push(padTimeText(0))
+            clockTime.push(padTimeText(0));
         }
         let separator = Timer.blink ? "." : ":";
         Timer.blink = !Timer.blink;
@@ -131,19 +130,19 @@ const Timer = {
 };
 
 function onKeyPress(e) {
-    // e.preventDefault();
+// e.preventDefault();
     const keyKodeToDirection = function (keyCode) {
         switch (keyCode) {
-            case 13: // enter
-                return START;
-            case 82: // 'r'
-                return RESTART;
-            case 75: // 'k'
-                return PAUSE;
-            case 32: // ' '
-                return START_PAUSE;
-            default:
-                return keyCode;
+        case 13: // enter
+            return START;
+        case 82: // 'r'
+            return RESTART;
+        case 75: // 'k'
+            return PAUSE;
+        case 32: // ' '
+            return START_PAUSE;
+        default:
+            return keyCode;
         }
     };
     const code = keyKodeToDirection(e.keyCode);
@@ -166,19 +165,19 @@ function onKeyPress(e) {
 
 
 function padTimeText(value) {
-    return value < 10 ? "0" + value : "" + value
+    return value < 10 ? "0" + value : "" + value;
 }
 
 function init() {
-    const hash = window.location.href.split('#')[1] || 4;
+    const hash = window.location.href.split("#")[1] || 4;
     Timer.totalTime = hash * 60000;
     Timer.progressBar = document.querySelector("#progress");
     Timer.progressText = document.querySelector(".time-field");
     Timer.endImage = document.querySelector(".ended");
     Timer.beep = document.getElementById("beepbeep");
     Timer.progressBar.style.transitionDuration = (Timer.totalTime / 1000) + "s";
-    document.body.addEventListener('click', Timer.start, false);
-    window.addEventListener('keydown', onKeyPress);
+    document.body.addEventListener("click", Timer.start, false);
+    window.addEventListener("keydown", onKeyPress);
     const begin = new Date();
     Timer.endDate = new Date(begin.getTime() + Timer.totalTime);
     Timer.update(begin);
@@ -186,25 +185,26 @@ function init() {
     if (Timer.beep && Timer.beep.load) {
         Timer.beep.load();
     }
-    Timer.beep.addEventListener('ended', function () {
+    Timer.beep.addEventListener("ended", function () {
         if (Timer.started) {
             return;
         }
         Timer.progressBar.style.transitionDuration = "0.3s";
-        Timer.progressBar.classList.remove('active');
-        Timer.progressText.classList.add('hidden');
-        Timer.endImage.classList.remove('hidden');
+        Timer.progressBar.classList.remove("active");
+        Timer.progressText.classList.add("hidden");
+        Timer.endImage.classList.remove("hidden");
     });
 }
 
-if (document.readyState !== 'loading') {
+if (document.readyState !== "loading") {
     init();
 } else {
-    document.addEventListener("DOMContentLoaded", function (event) {
+    document.addEventListener("DOMContentLoaded", function () {
         init();
     });
 }
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js', {scope: './'});
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js", {scope: "./"});
 }
-})();
+
+export default Timer;
