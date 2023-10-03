@@ -1,0 +1,24 @@
+{
+  "name": "timer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Best ever timer",
+  "main": "index.js",
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "style": "npx eslint .",
+    "style:fix": "npx eslint . --fix",
+    "style2": "npx stylelint \"**/*.css\"",
+    "style2:fix": "npx stylelint \"**/*.css\" --fix",
+    "updates": "npx ncu",
+    "updates:fix": "npx ncu -u && npm install"
+  },
+  "devDependencies": {
+    "eslint": "^8.50.0",
+    "globals": "^13.22.0",
+    "npm-check-updates": "^16.14.4",
+    "stylelint": "^15.10.3",
+    "stylelint-config-standard": "^34.0.0"
+  }
+}

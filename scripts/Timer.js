@@ -1,23 +1,29 @@
 "use strict";
+
+function padTimeText(value) {
+    return value < 10 ? "0" + value : "" + value;
+}
+
+function int(a) {
+    return Math.floor(a);
+}
+
 function calcTime(startDate, endDate) {
     const MILLISECONDS = 1;
     const SECONDS = 1e3;
     const MINUTES = 6e4;
     const HOURS = 36e5;
 
-    function int(a) {
-        return Math.floor(a);
-    }
 
     const c = endDate.getTime() - startDate.getTime();
     const res = {};
     res.totalMilliseconds = c / MILLISECONDS;
     res.totalSeconds = c / SECONDS;
-    res.totalMinutes = c / MINUTES;
-    res.totalHours = c / HOURS;
-    res.remainingHours = int(res.totalHours);
-    res.remainingMinutes = int(res.totalMinutes - 60 * int(res.totalHours));
-    res.remainingSeconds = int(res.totalSeconds - 60 * int(res.totalMinutes));
+    const totalMinutes = c / MINUTES;
+    const totalHours = c / HOURS;
+    res.remainingHours = int(totalHours);
+    res.remainingMinutes = int(totalMinutes - 60 * int(totalHours));
+    res.remainingSeconds = int(res.totalSeconds - 60 * int(totalMinutes));
     return res;
 }
 
@@ -99,9 +105,9 @@ const Timer = {
         } else {
             clockTime.push(padTimeText(0));
         }
-        let separator = Timer.blink ? "." : ":";
+        const separator = Timer.blink ? "." : ":";
         Timer.blink = !Timer.blink;
-        let title = clockTime.join(separator) + (Timer.label && Timer.label !== "" ? " : " + Timer.label : "");
+        const title = clockTime.join(separator) + (Timer.label && Timer.label !== "" ? " : " + Timer.label : "");
         Timer.updateTitle(title);
         Timer.updateText(title);
         Timer.progress = (Timer.totalTime - Time.totalMilliseconds) / Timer.totalTime;
@@ -113,7 +119,9 @@ const Timer = {
     updateProgressBar: function () {
     },
     updateText: function (text) {
-        if (text) Timer.progressText.innerText = text;
+        if (text) {
+            Timer.progressText.innerText = text;
+        }
     },
     onTimeComplete: function () {
         Timer.progress = 1;
@@ -164,9 +172,6 @@ function onKeyPress(e) {
 }
 
 
-function padTimeText(value) {
-    return value < 10 ? "0" + value : "" + value;
-}
 
 function init() {
     const hash = window.location.href.split("#")[1] || 4;
@@ -185,7 +190,7 @@ function init() {
     if (Timer.beep && Timer.beep.load) {
         Timer.beep.load();
     }
-    Timer.beep.addEventListener("ended", function () {
+    Timer.beep.addEventListener("ended", () => {
         if (Timer.started) {
             return;
         }
@@ -196,13 +201,8 @@ function init() {
     });
 }
 
-if (document.readyState !== "loading") {
-    init();
-} else {
-    document.addEventListener("DOMContentLoaded", function () {
-        init();
-    });
-}
+init();
+
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js", {scope: "./"});
 }
